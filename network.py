@@ -1,5 +1,7 @@
 import networkx as nx 
 import os,sys,argparse,json
+from networkx.algorithms import approximation as ax
+
 #import matplotlib.pylot as plt
 
 def loadTopo(file):
@@ -105,14 +107,20 @@ if __name__ == '__main__':
                 if port != port_temp and port_temp > port:
                     G.add_edge(port_temp,port,weight = 0.01)
     print("shortest path = ",nx.shortest_path(G,"h3","h2",weight = 'weight' ) )
-    T = nx.minimum_spanning_tree(G,weight='weight')
-    ST = sorted(T.edges)
-    print("spainning tree = ",ST)
-    GT = nx.Graph()
-    GT.add_edges_from(ST)
-    GTC = GT
-    for node in nx.nodes(GT):
-        numN = len(sorted(nx.neighbors(GT,node)))
+
+    #graphs = list(nx.connected_component_subgraphs(G))
+
+    ST = ax.steinertree.steiner_tree(G,external_port)
+
+    # T = nx.minimum_spanning_tree(G,weight='weight')
+    SST = sorted(ST.edges)
+    print("steiner tree = ",SST)
+
+
+    # GT = nx.Graph()
+    # GT.add_edges_from(ST)
+    # for node in nx.nodes(GT):
+    #     numN = len(sorted(nx.neighbors(GT,node)))
         # print(numN)
         # print(node)
         # if numN == 1 and node[0] == 's':
