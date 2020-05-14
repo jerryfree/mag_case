@@ -97,42 +97,49 @@ class maghelper:
             short_p = nx.shortest_path(steiner_t,src,dst)
             
             if len(short_p) > 1 :
-                print(short_p)
+                #print("nx short path=",short_p)
                 hop = 0 
                 g_short_path =[]
                 while hop < (len(short_p)-1):
                     if short_p[hop][0:2] == short_p[hop+1][0:2] :
                         g_short_path.append( (short_p[hop],[short_p[hop+1]]) )
                     hop = hop + 1 
+                #print("g_short_path = ",g_short_path)
+                i = 0 
+                while i  < (len(g_short_path)-1):
+                    #print(g_short_path[i])
+                    if g_short_path[i][0][0:2] == g_short_path[i+1][0][0:2]:
+                        g_short_path[i][1][0:5] = g_short_path[i+1][1][0:5]
+                        g_short_path.pop(i+1)
+                    i = i+1
+                #print("g_short_path c = ",g_short_path)    
+                    
                 cs_path.append(g_short_path)
             
-        print("st short combine path =",cs_path)
-        # in_swpipie={}
-        # ingress_ports=[]#for path
-        # egress_ports=[]#for swith
-        # for path in cs_path :
-        #     for insw_path in path:
-        #         if ingress_ports.count(insw_path[0]) == 0 :
-        #             ingress_ports.append(insw_path[0])
-        # #print(ingress_ports)
-        # for port in ingress_ports:
-        #     for insw_path in cs_path:
-        #         if insw_path[0] == port:
-        #             egress_ports.append(insw_path[1])
-                    # print(egress_ports)
-                    
-        #     g_path.append((port,egress_ports))
-        #     egress_ports=[]
-        # print("source_stener_path=",g_path)
-        # for path in s_path:
-        #     if len(path)>1:
-        # for node in Dsteiner.nodes:
-        #     for link in Dsteiner.edges:
-        #         if link[0] == node and link[0][0:2] == link[1][0:2]:
-        #             egress_port.append(link[1])
-        #     g_path.append((node,egress_port))
-        #     egress_port =[]
-        # print("steiner_tree",g_path)
+        #print("st short combine path =",cs_path)
+        in_swpipie={}
+        ingress_ports=[]#for path
+        egress_ports=[]#for swith
+        for path in cs_path :
+            for insw_path in path:
+                if ingress_ports.count(insw_path[0]) == 0 :
+                    ingress_ports.append(insw_path[0])
+        #print("switch ingress ports =",ingress_ports)
+        
+        for port in ingress_ports:
+            #print("ingress",port)
+            for path in cs_path:
+                #print(insw_path[0][0])
+                for in_swpipie in path:
+                    #print(in_swpipie)
+                    if in_swpipie[0] == port and egress_ports.count(in_swpipie[1][0]) == 0:
+                        egress_ports.append(in_swpipie[1][0])
+            #print("egress",egress_ports)
+            g_path.append((port,egress_ports))
+            egress_ports =[]
+        print("Format single source steiner path =",g_path)            
+        return g_path
+
 
 
 if __name__ == '__main__':
@@ -159,7 +166,7 @@ if __name__ == '__main__':
     SST = sorted(ST.edges)
     
 
-    print("general s path =",magh.shortest_path('h1','h2'))
+    print("Format shortest path =",magh.shortest_path('h1','h2'))
 
-    magh.steiner_tree('s1-p1',magh.external_port)
+    magh.steiner_tree('s1:p1',magh.external_port)
     

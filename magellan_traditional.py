@@ -13,9 +13,7 @@ def onPacket(pkt, ingestion):
 
     dst = macTable.get(pkt.l2.dst, None)
     if dst is None:
-        globel_path = steinerPath(steiner_graph, ingestion)
-        egress = globel_path.get_egressports(swTable.get(ingestion))
-        path = shortestPath(steiner_graph,ingestion,egress)
+        path = myPath(steiner_graph,ingestion)
     else:
         path = shortestPath( topo,ingestion, dst)
     return path
